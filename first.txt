@@ -2,3 +2,6 @@ Hello World
 
 - git add
 - git commit
+
+- git add .
+- git commit -v
