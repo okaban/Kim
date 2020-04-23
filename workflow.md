@@ -124,7 +124,7 @@ set -euo pipefail
 ## Preparation
 sra_list=$(<SraAccList.txt)
 
-## Download metagenome data
+## Download transcriptome data
 for sra_id in ${sra_list}
 do
 fastq-dump --split-files ${sra_id}
