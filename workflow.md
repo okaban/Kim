@@ -20,19 +20,18 @@ $ cd Downloads
 ```
 $ uname -a
 ```
-minicondaをインストールする。
+minicondaをインストールする。インストール時に色々聞かれるが、基本的に`Enter`を押すか、`Yes`を入力すればいい。
+最終的にホームディレクトリに`miniconda3`というディレクトリが作成されたらOK。
 ```
 $ wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
-$ bash Miniconda2-latest-Linux-x86_64.sh
+$ bash Miniconda3-latest-Linux-x86_64.sh
 ```
-インストール時に色々聞かれるが、基本的に`Enter`を押すか、`Yes`を入力すればいい。
-最終的にカレントディレクトリに`miniconda2`というディレクトリができており、.bashrcに以下の文が追加されている。
+vimを立ち上げて`~/.bashrc`に以下のスクリプトを追記する。
 ```
-> .bashrc
-# added by Miniconda2 4.2.12 installer
-export PATH="/home/user/miniconda2/bin:$PATH"
+# miniconda3のパス
+export PATH="~/miniconda3/bin:$PATH"
 ```
-インストール後、`.bashrc`を再度読み込む。
+`~/.bashrc`を再度読み込む。
 ```
 $ source ~/.bashrc
 ```
@@ -49,7 +48,7 @@ $ conda config --add channels bioconda
 ```
 Brigerをインストールする。
 ```
-conda install -c bioconda bioconductor-bridge
+$ conda install -c bioconda bioconductor-bridge
 ```
 基本的に`Enter`と`Yes`でどうにかなる。
 
@@ -64,31 +63,31 @@ conda install -c bioconda bioconductor-bridge
 
 ホームディレクトリに戻る。
 ```
-cd ~/
+$ cd ~/
 ```
 プロジェクト用のディレクトリと各種ファイルを作成する。
 ```
-mkdir my_projects
-mkdir my_projects/vollenhovia
-cd my_projects/vollenhovia
-mkdir data analysis scripts
+$ mkdir my_projects
+$ mkdir my_projects/vollenhovia
+$ cd my_projects/vollenhovia
+$ mkdir data analysis scripts
 ```
 Genbankのassembly_summary（全Genbankファイルの一覧）をダウンロードする。
 ```
-cd data
-wget ftp://ftp.ncbi.nlm.nih.gov/genomes/ASSEMBLY_REPORTS/assembly_summary_genbank.txt
+$ cd data
+$ wget ftp://ftp.ncbi.nlm.nih.gov/genomes/ASSEMBLY_REPORTS/assembly_summary_genbank.txt
 ```
 ウメマツアリのゲノム情報を抽出する。
 ここでは検索するキーワードとして、[Accession ID](https://www.ncbi.nlm.nih.gov/bioproject/275948)を使用する。
 ```
-grep "PRJDB3517" assembly_summary_genbank.txt
+$ grep "PRJDB3517" assembly_summary_genbank.txt
 ```
 表示されたURLをコピーして、ダウンロードする。
 ```
-mkdir emeryi
-cd emeryi
-wget ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/949/405/GCA_000949405.1_V.emery_V1.0/*gz ./
-gunzip *gz
+$ mkdir emeryi
+$ cd emeryi
+$ wget ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/949/405/GCA_000949405.1_V.emery_V1.0/*gz ./
+$ gunzip *gz
 ```
 
 ---
@@ -96,14 +95,15 @@ gunzip *gz
 **ヤドリウメマツアリのトランスクリプトームデータをダウンロードする**
 
 sratoolkitをインストールする。
+`-y`を付与するとyes/noを聞かれずにインストールが進行する。
 ```
-conda install -c bioconda sra-tools
+$ conda install -c bioconda sra-tools -y
 ```
 ダウンロード先のディレクトリを作成する。
 ```
-cd ~/my_projects/vollenhovia
-mkdir nipponica
-cd nipponica
+$ cd ~/my_projects/vollenhovia
+$ mkdir nipponica
+$ cd nipponica
 ```
 WebブラウザでVollenhovia nipponicaの[BioProject](https://www.ncbi.nlm.nih.gov/bioproject/?term=422773)から[SRA Experiments](https://www.ncbi.nlm.nih.gov/sra?linkname=bioproject_sra_all&from_uid=422773)を開く。
 ![](https://i.gyazo.com/982a1a6ddfff798b214688c7e7b08cab.png)
@@ -113,12 +113,11 @@ Sra Experimentsの一覧からAccession IDを抽出する。右上の"Send to"�
 ```
 vi SraAccList.txt
 ```
-vimを編集モード（"i"を入力）にしてクリップボードのテキストをペーストする。編集が終わったらvimを終了する（"esc"+"ZZ"）。同様の操作で以下のスクリプトファイル（sratool.sh）を作成する。
+vimを編集モード（"i"を入力）にしてクリップボードのテキストをペーストする。編集が終わったらvimを終了する（"esc"+"ZZ"）。同様の操作で以下のスクリプトファイル（fastq-dump.sh）を作成する。
 ```
-#sratool.sh
+#fastq-dump.sh
 
 #!/bin/bash
-#PBS -l nodes=1:ppn=32
 set -euo pipefail
 
 ## Preparation
@@ -130,16 +129,17 @@ do
 fastq-dump --split-files ${sra_id}
 done
 ```
-sratool.shを起動する。ダウンロードにはかなりの時間がかかるため、ログアウトしてもコマンドが終了しないように`nohup`コマンドを使用する。
+fastq-dump.shを起動する。ダウンロードにはかなりの時間がかかるため、ログアウトしてもコマンドが終了しないように`nohup`コマンドを使用する。
 ```
-(nohup bash sratool.sh &) >& log.sratool.txt
+$ (nohup bash fastq-dump.sh &) >& log.fastq-dump.txt
 ```
 sratool.shが実行されたら、バックグラウンドで実行されているかを確認する。
 ```
-top
+$ top
 ```
-以下に実行例を示す。自分のユーザー名（USERに表示）でbash（COMMANDを確認）が実行されていればOK。
-![](https://i.gyazo.com/99af7a682d736cbf254cc1af8e66f46e.png)
+以下に実行例を示す。自分のユーザー名（USERに表示）でfastq-dump-origin（COMMANDを確認）が実行されていればOK。
+![](https://i.gyazo.com/0fc41417a02473dc9796c22fa7ca0cb6.png)
+数分経つとDRRから始まるファイルがカレントディレクトリに出現します。一旦ログアウトでもして気長に待ちましょう。
 
 **参考**
 - [bioconda / packages / sra-tools 2.10.3](https://anaconda.org/bioconda/sra-tools)
