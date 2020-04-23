@@ -130,11 +130,18 @@ do
 fastq-dump --split-files ${sra_id}
 done
 ```
-sratool.shを起動する。ダウンロードにはかなりの時間がかかる。
+sratool.shを起動する。ダウンロードにはかなりの時間がかかるため、ログアウトしてもコマンドが終了しないように`nohup`コマンドを使用する。
 ```
-bash nohup sratool.sh
+(nohup bash sratool.sh &) >& log.sratool.txt
 ```
+sratool.shが実行されたら、バックグラウンドで実行されているかを確認する。
+```
+top
+```
+以下に実行例を示す。自分のユーザー名（USERに表示）でbash（COMMANDを確認）が実行されていればOK。
+![](https://i.gyazo.com/99af7a682d736cbf254cc1af8e66f46e.png)
 
 **参考**
 - [bioconda / packages / sra-tools 2.10.3](https://anaconda.org/bioconda/sra-tools)
 - [SRA Toolkit 使い方 公開データのダウンロードとsra fastq変換](http://bioinfo-dojo.net/2017/04/19/sra-toolkit_data_download_sra_fastq/)
+- [【 nohup 】コマンド――端末を閉じてもログアウトしても処理を続ける](https://www.atmarkit.co.jp/ait/articles/1708/24/news022.html)
