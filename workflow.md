@@ -71,7 +71,7 @@ cd ~/
 mkdir my_projects
 mkdir my_projects/vollenhovia
 cd my_projects/vollenhovia
-mkdir data alaysis scripts
+mkdir data analysis scripts
 ```
 Genbankのassembly_summary（全Genbankファイルの一覧）をダウンロードする。
 ```
