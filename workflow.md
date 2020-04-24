@@ -113,33 +113,32 @@ Sra Experimentsの一覧からAccession IDを抽出する。右上の"Send to"�
 ```
 vi SraAccList.txt
 ```
-vimを編集モード（"i"を入力）にしてクリップボードのテキストをペーストする。編集が終わったらvimを終了する（"esc"+"ZZ"）。同様の操作で以下のスクリプトファイル（fastq-dump.sh）を作成する。
+vimを編集モード（"i"を入力）にしてクリップボードのテキストをペーストする。編集が終わったらvimを終了する（"esc"+"ZZ"）。同様の操作で以下のスクリプトファイル（run-sratool.sh）を作成する。
 ```
-#fastq-dump.sh
+#run-sratool.sh
 
 #!/bin/bash
 set -euo pipefail
 
-## Preparation
-sra_list=$(<SraAccList.txt)
+## Download sra data
+prefetch -O sra --option-file SraAccList.txt
 
-## Download transcriptome data
+## Splist fo fastq data
+sra_list=$(<SraAccList.txt)
 for sra_id in ${sra_list}
 do
-fastq-dump --split-files ${sra_id}
+fastq-dump $(pwd)/sra/${sra_id}/${sra_id}.sra --split-files -O fastq
 done
 ```
-fastq-dump.shを起動する。ダウンロードにはかなりの時間がかかるため、ログアウトしてもコマンドが終了しないように`nohup`コマンドを使用する。
+run-sratool.shを起動する。ダウンロードにはかなりの時間がかかるため、ログアウトしてもコマンドが終了しないように`nohup`コマンドを使用する。log.fastq-dump.txtmにはダウンロードのログが記録される。
 ```
-$ (nohup bash fastq-dump.sh &) >& log.fastq-dump.txt
+$ (nohup bash run-sratool.sh &) >& log.fastq-dump.txt
 ```
-fastq-dump.shが実行されたら、バックグラウンドで実行されているかを確認する。
+run-sratool.shが実行されたら、バックグラウンドで実行されているかを確認する。
 ```
 $ top
 ```
-以下に実行例を示す。自分のユーザー名（USERに表示）でfastq-dump-origin（COMMANDを確認）が実行されていればOK。
-![](https://i.gyazo.com/0fc41417a02473dc9796c22fa7ca0cb6.png)
-数分経つとDRRから始まるファイルがカレントディレクトリに出現します。一旦ログアウトでもして気長に待ちましょう。
+以下に実行例を示す。自分のユーザー名（USERに表示）でprefetch（COMMANDを確認）が実行されていればOK。一旦ログアウトして気長に待ちましょう。
 
 **参考**
 - [bioconda / packages / sra-tools 2.10.3](https://anaconda.org/bioconda/sra-tools)
