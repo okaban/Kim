@@ -132,7 +132,7 @@ done
 ```
 run-sratool.shを起動する。ダウンロードにはかなりの時間がかかるため、ログアウトしてもコマンドが終了しないように`nohup`コマンドを使用する。log.fastq-dump.txtmにはダウンロードのログが記録される。
 ```
-$ (nohup bash run-sratool.sh &) >& log.fastq-dump.txt
+$ (nohup bash run-sratool.sh &) >& log.sratool.txt
 ```
 run-sratool.shが実行されたら、バックグラウンドで実行されているかを確認する。
 ```
