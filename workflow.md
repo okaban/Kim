@@ -94,6 +94,11 @@ $ gunzip *gz
 ## ステップ 3
 **ヤドリウメマツアリのトランスクリプトームデータをダウンロードする**
 
+neoサーバーに接続する。
+```
+ssh neo
+```
+
 sratoolkitをインストールする。
 `-y`を付与するとyes/noを聞かれずにインストールが進行する。
 ```
@@ -134,11 +139,12 @@ run-sratool.shを起動する。ダウンロードにはかなりの時間がか
 ```
 $ (nohup bash run-sratool.sh &) >& log.sratool.txt
 ```
-run-sratool.shが実行されたら、バックグラウンドで実行されているかを確認する。
+run-sratool.shが実行されたら、バックグラウンドで実行されているかを確認する。自分のユーザー名（USERに表示）でprefetch（COMMANDを確認）が実行されていればOK。
 ```
 $ top
 ```
-以下に実行例を示す。自分のユーザー名（USERに表示）でprefetch（COMMANDを確認）が実行されていればOK。一旦ログアウトして気長に待ちましょう。
+ダウンロードが完了すると、`~/my_projects/vollenhovia/data/nipponica/fastq`に計55個のファイルが作成される。うちDRR050273-278はシングルエンドリード、DRR050279-302はペアエンドリードである。
+![](https://i.gyazo.com/209a6950663f60885116d055af62d489.png)
 
 **参考**
 - [bioconda / packages / sra-tools 2.10.3](https://anaconda.org/bioconda/sra-tools)
