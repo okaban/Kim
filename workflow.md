@@ -145,7 +145,43 @@ $ top
 ダウンロードが完了すると、`~/my_projects/vollenhovia/data/nipponica/fastq`に計55個のファイルが作成される。うちDRR050273-278はシングルエンドリード、DRR050279-302はペアエンドリードである。
 ![](https://i.gyazo.com/209a6950663f60885116d055af62d489.png)
 
+---
+## ステップ 3
+**FastQCでクオリティチェックを行う**
+
+neoに接続する。
+```
+ssh neo
+```
+fastQCをインストールする。
+```
+conda install -c bioconda fastqc -y
+```
+`scripts`ディレクトリに移動し、`run-fastqc.sh`を作成する。
+```
+cd ~/my_projects/vollenhovia/scripts
+vi run-fastqc.sh
+```
+`run-fastqc.sh`に以下のスクリプトを書き込む。
+```
+#run-fastqc.sh
+
+#!/bin/bash
+set -euo pipefail
+
+mkdir ~/my_projects/vollenhovia/analysis/fastqc
+
+fastqc -t 4 -o ~/my_projects/vollenhovia/analysis/fastqc/ ~/my_projects/vollenhovia/data/nipponica/fastq/*.fastq
+```
+`run-fastqc.sh`を実行する。
+```
+(nohup bash run-fastqc.sh &) >& log-fastqc.txt
+```
+fastqcが終了したら、結果をローカルPCにダウンロードする。`date +%y%m%d`で年月日を2桁ずつ表示させることができる。ダウンロードが完了したら、HTMLファイルを確認して結果を解釈してみましょう。
+```
+scp -r [ユーザー名]@cacao.bioinfo.ttck.keio.ac.jp:~/my_projects/vollenhovia/analysis/fastqc ~/Desktop/fastqc_$(date +%y%m%d)
+```
 **参考**
-- [bioconda / packages / sra-tools 2.10.3](https://anaconda.org/bioconda/sra-tools)
-- [SRA Toolkit 使い方 公開データのダウンロードとsra fastq変換](http://bioinfo-dojo.net/2017/04/19/sra-toolkit_data_download_sra_fastq/)
-- [【 nohup 】コマンド――端末を閉じてもログアウトしても処理を続ける](https://www.atmarkit.co.jp/ait/articles/1708/24/news022.html)
+- [bioconda / packages / fastqc 0.11.9](https://anaconda.org/bioconda/fastqc)
+- [FASTQ クオリティコントロール](https://bi.biopapyrus.jp/rnaseq/qc/fastqc.html)
+- [物理 CPU、CPU コア、および論理 CPU の数を確認する](https://access.redhat.com/ja/solutions/2159401)
