@@ -178,8 +178,10 @@ fastqc -t 4 -o ~/my_projects/vollenhovia/analysis/fastqc/ ~/my_projects/vollenho
 (nohup bash run-fastqc.sh &) >& log-fastqc.txt
 ```
 fastqcが終了したら、結果をローカルPCにダウンロードする。`date +%y%m%d`で年月日を2桁ずつ表示させることができる。ダウンロードが完了したら、HTMLファイルを確認して結果を解釈してみましょう。
+
 ```
-scp -r [ユーザー名]@cacao.bioinfo.ttck.keio.ac.jp:~/my_projects/vollenhovia/analysis/fastqc ~/Desktop/fastqc_$(date +%y%m%d)
+scp -r [ユーザー名]@cacao.bioinfo.ttck.keio.ac.jp:~/my_projects/vollenhovia/analysis/fastqc ~/Desktop
+mv ~/Desktop/fastqc ~/Desktop/fastqc_$(date +%y%m%d)
 ```
 **参考**
 - [bioconda / packages / fastqc 0.11.9](https://anaconda.org/bioconda/fastqc)
