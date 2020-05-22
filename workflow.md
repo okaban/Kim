@@ -210,7 +210,7 @@ cd src/
 ```
 依存ソフトウェアであるBoostをインストールする。
 ```
-conda install -c anaconda boost
+conda install -c anaconda boost -y
 ```
 サンプルデータを使用してBridgerをテストランしてみる。最後に"##### Done #####"と表示されたらOK。
 ```
