@@ -217,6 +217,11 @@ conda install -c anaconda boost -y
 cd ../sample_test/
 ./run_Me.sh
 ```
+.bash_profileにパスを追記する。
+```
+echo 'export PATH=~/tools/Bridger_r2014-12-01:$PATH' >> ~/.bash_profile
+source ~/.bash_profile
+```
 
 **参考**
 - [Bridger: a new framework for de novo transcriptome assembly using RNA-seq data](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-015-0596-2)
