@@ -46,16 +46,10 @@ $ conda config --add channels defaults
 $ conda config --add channels r
 $ conda config --add channels bioconda
 ```
-Brigerをインストールする。
-```
-$ conda install -c bioconda bioconductor-bridge
-```
-基本的に`Enter`と`Yes`でどうにかなる。
 
 **参考**
 - [Linuxが32bitか64bitを確認する](https://linux.just4fun.biz/?%E9%80%86%E5%BC%95%E3%81%8DUNIX%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89/Linux%E3%81%8C32bit%E3%81%8B64bit%E3%82%92%E7%A2%BA%E8%AA%8D%E3%81%99%E3%82%8B)
 - [biocondaを利用してNGS関連のソフトウェアを一括でインストールする](http://imamachi-n.hatenablog.com/entry/2017/01/14/212719)
-- [bioconda / packages / bioconductor-bridge 1.50.0](https://anaconda.org/bioconda/bioconductor-bridge)
 
 ---
 ## ステップ 2
@@ -69,12 +63,12 @@ $ cd ~/
 ```
 $ mkdir my_projects
 $ mkdir my_projects/vollenhovia
-$ cd my_projects/vollenhovia
+$ cd my_projects/vollenhovia/
 $ mkdir data analysis scripts
 ```
 Genbankのassembly_summary（全Genbankファイルの一覧）をダウンロードする。
 ```
-$ cd data
+$ cd data/
 $ wget ftp://ftp.ncbi.nlm.nih.gov/genomes/ASSEMBLY_REPORTS/assembly_summary_genbank.txt
 ```
 ウメマツアリのゲノム情報を抽出する。
@@ -85,7 +79,7 @@ $ grep "PRJDB3517" assembly_summary_genbank.txt
 表示されたURLをコピーして、ダウンロードする。
 ```
 $ mkdir emeryi
-$ cd emeryi
+$ cd emeryi/
 $ wget ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/949/405/GCA_000949405.1_V.emery_V1.0/*gz ./
 $ gunzip *gz
 ```
@@ -105,9 +99,9 @@ $ conda install -c bioconda sra-tools -y
 ```
 ダウンロード先のディレクトリを作成する。
 ```
-$ cd ~/my_projects/vollenhovia
+$ cd ~/my_projects/vollenhovia/
 $ mkdir nipponica
-$ cd nipponica
+$ cd nipponica/
 ```
 WebブラウザでVollenhovia nipponicaの[BioProject](https://www.ncbi.nlm.nih.gov/bioproject/?term=422773)から[SRA Experiments](https://www.ncbi.nlm.nih.gov/sra?linkname=bioproject_sra_all&from_uid=422773)を開く。
 ![](https://i.gyazo.com/982a1a6ddfff798b214688c7e7b08cab.png)
@@ -159,7 +153,7 @@ conda install -c bioconda fastqc -y
 ```
 `scripts`ディレクトリに移動し、`run-fastqc.sh`を作成する。
 ```
-cd ~/my_projects/vollenhovia/scripts
+cd ~/my_projects/vollenhovia/scripts/
 vi run-fastqc.sh
 ```
 `run-fastqc.sh`に以下のスクリプトを書き込む。
@@ -187,3 +181,46 @@ mv ~/Desktop/fastqc ~/Desktop/fastqc_$(date +%y%m%d)
 - [bioconda / packages / fastqc 0.11.9](https://anaconda.org/bioconda/fastqc)
 - [FASTQ クオリティコントロール](https://bi.biopapyrus.jp/rnaseq/qc/fastqc.html)
 - [物理 CPU、CPU コア、および論理 CPU の数を確認する](https://access.redhat.com/ja/solutions/2159401)
+
+---
+## ステップ 5
+**Bridgerをインストールする**
+
+サーバーにアクセスする。
+```
+ssh [user_name]@cacao.bioinfo.ttck.keio.ac.jp
+```
+Bridgerのソースコードをインストールする。
+```
+mkdir tools
+cd tools
+wget https://sourceforge.net/projects/rnaseqassembly/files/Bridger_r2014-12-01.tar.gz
+tar xvzf Bridger_r2014-12-01.tar.gz
+```
+ソースコードをビルドする。
+```
+cd Bridger_r2014-12-01/
+./configure
+make
+```
+Bridger_r2014-12-01が正常にビルドされたかを確認する。Bridgerの基本コマンドやオプションコマンドが表示されたらOK。
+```
+cd src/
+./Assemble -h
+```
+依存ソフトウェアであるBoostをインストールする。
+```
+conda install -c anaconda boost
+```
+サンプルデータを使用してBridgerをテストランしてみる。最後に"##### Done #####"と表示されたらOK。
+```
+cd ../sample_test/
+./run_Me.sh
+```
+
+**参考**
+- [Bridger: a new framework for de novo transcriptome assembly using RNA-seq data](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-015-0596-2)
+- [fmaguire/Bridger_Assembler](https://github.com/fmaguire/Bridger_Assembler)
+- [De novo transcriptome assembly](https://rpubs.com/nishikosh/denovotcasmbl)
+- [「ビルド」という作業は何を指しているのか](https://www.atmarkit.co.jp/ait/articles/1105/23/news128.html)
+- [anaconda / packages / boost 1.71.0](https://anaconda.org/anaconda/boost)
